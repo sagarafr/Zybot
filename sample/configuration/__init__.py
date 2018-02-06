@@ -16,9 +16,3 @@
 # under the License.
 
 # -*- coding: utf-8 -*-
-
-from sample.configuration import configuration
-
-if __name__ == '__main__':
-    config = configuration.Configuration(filename="./config.ini")
-    print(config.token)
