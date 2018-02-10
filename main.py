@@ -18,7 +18,20 @@
 # -*- coding: utf-8 -*-
 
 from sample.configuration import configuration
+from sample.app import application
+
+
+def start(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text="hello world")
+
+
+def echo(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+
 
 if __name__ == '__main__':
     config = configuration.Configuration(filename="./config.ini")
-    print(config.token)
+    app = application.Application(token=config.token)
+    app.add_command(function_name='start', callback=start)
+    app.add_message(echo)
+    app.run()
