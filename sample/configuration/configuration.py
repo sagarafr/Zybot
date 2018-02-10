@@ -21,32 +21,35 @@ import configparser
 
 
 class Configuration(object):
-    instance = None
+    _instance = None
 
     class __ConfigurationSingleton(object):
         def __init__(self, filename: str = "config.ini"):
             self.filename = filename
             self._config = configparser.ConfigParser()
-            self._token = None
-            self._init_config()
-
-        def _init_config(self):
             self._config.read(self.filename)
-            if "DEFAULT" not in self._config or "token" not in self._config["DEFAULT"]:
-                raise NameError
             self._token = self._config["DEFAULT"]["token"]
+            self._section = None
 
         @property
         def token(self):
             return self._token
 
+        def __getattr__(self, item):
+            if self._config.has_option(section="DEFAULT", option=item):
+                return self._config["DEFAULT"][item]
+            return None
+
+        def get(self, option: str, session: str = "DEFAULT"):
+            return self._config.get(session, option=option)
+
     def __new__(cls, *args, **kwargs):
-        if cls.instance is None:
-            cls.instance = cls.__ConfigurationSingleton(**kwargs)
+        if cls._instance is None:
+            cls._instance = cls.__ConfigurationSingleton(**kwargs)
         else:
-            if 'filename' in kwargs and cls.instance.filename != kwargs['filename']:
-                cls.instance = cls.__ConfigurationSingleton(**kwargs)
-        return cls.instance
+            if 'filename' in kwargs and cls._instance.filename != kwargs['filename']:
+                cls._instance = cls.__ConfigurationSingleton(**kwargs)
+        return cls._instance
 
     def __getattr__(self, item):
         return getattr(self, item)
