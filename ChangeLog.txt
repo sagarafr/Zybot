@@ -1,0 +1,4 @@
+Version 0.0
+
+* Add a configuration file to store token
+* Add an application class to manage basic command and filter
