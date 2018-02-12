@@ -17,25 +17,16 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import ConfigurationAbstract
+from .abstract_configuration import *
+import os
 
 
-class Configuration(object):
-    _instance = None
+class ConfigurationEnv(ConfigurationAbstract):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            if 'ctor' not in kwargs:
-                raise ValueError("Have not ctor variable")
-            if not issubclass(kwargs['ctor'], ConfigurationAbstract):
-                raise ValueError("Have not the right inheritance")
-            ctor = kwargs['ctor']
-            cls._instance = ctor(**kwargs)
-
-        return cls._instance
-
-    def __getattr__(self, item):
-        return getattr(self, item)
-
-    def __setattr__(self, key, value):
-        return setattr(self, key, value)
+    def _init_token(self, **kwargs):
+        token = os.getenv('TELEGRAM_TOKEN')
+        if token is None:
+            raise ValueError("The environment variable TELEGRAM_TOKEN is not created")
+        self._token = token

@@ -17,25 +17,21 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import ConfigurationAbstract
+
+import abc
 
 
-class Configuration(object):
-    _instance = None
+class ConfigurationAbstract(object, metaclass=abc.ABCMeta):
+    _token = None
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            if 'ctor' not in kwargs:
-                raise ValueError("Have not ctor variable")
-            if not issubclass(kwargs['ctor'], ConfigurationAbstract):
-                raise ValueError("Have not the right inheritance")
-            ctor = kwargs['ctor']
-            cls._instance = ctor(**kwargs)
+    def __init__(self, **kwargs):
+        if self._token is None:
+            self._init_token(**kwargs)
 
-        return cls._instance
+    @property
+    def token(self):
+        return self._token
 
-    def __getattr__(self, item):
-        return getattr(self, item)
-
-    def __setattr__(self, key, value):
-        return setattr(self, key, value)
+    @abc.abstractmethod
+    def _init_token(self, **kwargs):
+        raise NotImplementedError()

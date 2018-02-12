@@ -28,9 +28,8 @@ class Application(object):
     _instance = None
 
     class __Application(object):
-        def __init__(self, token: str=None, filename: str=None):
-            config = configuration.Configuration(token=token, filename=filename)
-            print(config.token)
+        def __init__(self):
+            config = configuration.Configuration()
             self._updater = ext.Updater(token=config.token)
             self._dispatcher = self._updater.dispatcher
 
@@ -56,5 +55,5 @@ class Application(object):
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = Application.__Application(**kwargs)
+            cls._instance = Application.__Application()
         return cls._instance

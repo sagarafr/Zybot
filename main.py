@@ -17,6 +17,8 @@
 
 # -*- coding: utf-8 -*-
 
+from sample.configuration import configuration
+from sample.configuration import configuration_ini
 from sample.app import application
 import telegram
 from telegram import ext
@@ -52,6 +54,7 @@ def unknown(bot, update):
 
 
 if __name__ == '__main__':
+    configuration.Configuration(ctor=configuration_ini.ConfigurationIni, filename="./config.ini")
     app = application.Application()
     app.add_command(function_name='start', callback=start)
     app.add_command(callback=inline_caps, type_handler=application.INLINE_HANDLER)
