@@ -18,37 +18,57 @@
 # -*- coding: utf-8 -*-
 
 import configparser
+import os
+from os import path
 
 
 class Configuration(object):
     _instance = None
 
     class __ConfigurationSingleton(object):
-        def __init__(self, filename: str = "config.ini"):
-            self.filename = filename
+        def __init__(self, filename: str = None, token: str = None):
             self._config = configparser.ConfigParser()
-            self._config.read(self.filename)
-            self._token = self._config["DEFAULT"]["token"]
-            self._section = None
+            self._token = token
+            if filename is not None:
+                self._config.read(filename)
+                self._init_token()
 
         @property
         def token(self):
             return self._token
 
-        def __getattr__(self, item):
-            if self._config.has_option(section="DEFAULT", option=item):
-                return self._config["DEFAULT"][item]
-            return None
-
-        def get(self, option: str, session: str = "DEFAULT"):
-            return self._config.get(session, option=option)
+        def _init_token(self):
+            if self._token is None:
+                self._token = self.get("token")
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = cls.__ConfigurationSingleton(**kwargs)
-        else:
-            if 'filename' in kwargs and cls._instance.filename != kwargs['filename']:
-                cls._instance = cls.__ConfigurationSingleton(**kwargs)
+            filename = None
+            token = None
+
+            if 'filename' in kwargs:
+                if kwargs['filename'] is not None and not path.isfile(kwargs['filename']):
+                    print(kwargs['filename'] + " in argument doesn't exist")
+                else:
+                    filename = kwargs['filename']
+            if 'token' in kwargs and kwargs['token'] is not None and kwargs['token'] != '':
+                token = kwargs['token']
+
+            if filename is None:
+                filename = os.getenv('TELEGRAM_CONFIG_FILE')
+                if filename is not None and not path.isfile(filename):
+                    print(filename + " doesn't exist")
+                    filename = None
+            if token is None:
+                token = os.getenv('TELEGRAM_TOKEN')
+                if token == '':
+                    token = None
+
+            if token is None and filename is None:
+                raise ValueError('token and filename value are invalid')
+
+            cls._instance = cls.__ConfigurationSingleton(filename=filename, token=token)
+
         return cls._instance
 
     def __getattr__(self, item):
