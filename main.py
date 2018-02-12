@@ -17,21 +17,45 @@
 
 # -*- coding: utf-8 -*-
 
-from sample.configuration import configuration
 from sample.app import application
+import telegram
+from telegram import ext
 
 
 def start(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="hello world")
 
 
+def caps(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text=str(update.message.text).upper())
+
+
 def echo(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 
+def inline_caps(bot, update):
+    query = update.inline_query.query
+    if not query:
+        return
+    results = [telegram.InlineQueryResultArticle(
+        id=query.upper(),
+        title="Caps",
+        input_message_content=telegram.InputTextMessageContent(query.upper())
+    )]
+    bot.answer_inline_query(update.inline_query.id, results)
+
+
+def unknown(bot, update):
+    bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+    bot.send_message(chat_id=update.message.chat_id, text="Sorry I don't understand your request")
+
+
 if __name__ == '__main__':
-    config = configuration.Configuration(filename="./config.ini")
-    app = application.Application(token=config.token)
+    app = application.Application()
     app.add_command(function_name='start', callback=start)
+    app.add_command(callback=inline_caps, type_handler=application.INLINE_HANDLER)
     app.add_message(echo)
+    app.add_message(callback=unknown, filters=ext.Filters.command)
+    print("run")
     app.run()

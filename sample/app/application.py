@@ -18,24 +18,41 @@
 # -*- coding: utf-8 -*-
 
 from telegram import ext
+from ..configuration import configuration
+
+INLINE_HANDLER = "inline"
+COMMAND_HANDLER = "command"
 
 
 class Application(object):
     _instance = None
 
     class __Application(object):
-        def __init__(self, token: str):
-            self._updater = ext.Updater(token=token)
+        def __init__(self, token: str=None, filename: str=None):
+            config = configuration.Configuration(token=token, filename=filename)
+            print(config.token)
+            self._updater = ext.Updater(token=config.token)
             self._dispatcher = self._updater.dispatcher
 
-        def add_command(self, function_name, callback, group=ext.dispatcher.DEFAULT_GROUP):
-            self._dispatcher.add_handler(handler=ext.CommandHandler(function_name, callback), group=group)
+        def add_command(self, callback, function_name="", type_handler=None, group=ext.dispatcher.DEFAULT_GROUP):
+            if type_handler is not None:
+                if type_handler == COMMAND_HANDLER:
+                    self._dispatcher.add_handler(handler=ext.CommandHandler(function_name, callback), group=group)
+                elif type_handler == INLINE_HANDLER:
+                    self._dispatcher.add_handler(handler=ext.InlineQueryHandler(callback), group=group)
+            else:
+                self._dispatcher.add_handler(handler=ext.CommandHandler(function_name, callback), group=group)
 
         def add_message(self, callback, filters=ext.Filters.text, group=ext.dispatcher.DEFAULT_GROUP):
             self._dispatcher.add_handler(ext.MessageHandler(filters, callback), group=group)
 
         def run(self):
             self._updater.start_polling()
+            self.stop()
+
+        def stop(self):
+            self._updater.idle()
+            self._updater.stop()
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
