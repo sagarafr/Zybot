@@ -1,4 +1,5 @@
-# Licensed to the Apache Software Foundation (ASF) under one
+#!/usr/bin/env python
+#  Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
@@ -16,3 +17,19 @@
 # under the License.
 
 # -*- coding: utf-8 -*-
+
+from setuptools import setup
+
+setup(
+    name="Zybot",
+    license="ASP",
+    maintainer_email="sagarafr@gmail.com",
+    description="A minimalist package for building Telegram bot",
+    install_requires=[
+        'python-telegram-bot',
+    ],
+    entry_points='''
+    [console_scripts]
+    teletrack=zybot.bot:main
+    ''',
+)
