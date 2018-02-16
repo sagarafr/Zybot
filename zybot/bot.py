@@ -23,7 +23,7 @@ from examples.application import Application
 
 
 def main():
-    app = os.getenv("TELEGRAM_BOT_APP")
+    app = os.getenv("ZYBOT_APP")
     exec(open(app).read())
     app = Application()
     print("run")
