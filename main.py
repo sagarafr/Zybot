@@ -17,10 +17,10 @@
 
 # -*- coding: utf-8 -*-
 
-from teletack.app import application
-from teletack.configuration import configuration
-from teletack.configuration import configuration_ini
-import telegram
+import telegram.ext
+from zybot.app import application
+from zybot.configuration import configuration
+from zybot.configuration import configuration_ini
 
 
 def start(bot, update):
