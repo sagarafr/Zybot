@@ -16,3 +16,7 @@
 # under the License.
 
 # -*- coding: utf-8 -*-
+
+from . import app
+from . import configuration
+from . import bot

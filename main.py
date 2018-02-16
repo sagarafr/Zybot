@@ -17,11 +17,10 @@
 
 # -*- coding: utf-8 -*-
 
-from sample.configuration import configuration
-from sample.configuration import configuration_ini
-from sample.app import application
+from teletack.app import application
+from teletack.configuration import configuration
+from teletack.configuration import configuration_ini
 import telegram
-from telegram import ext
 
 
 def start(bot, update):
@@ -59,6 +58,6 @@ if __name__ == '__main__':
     app.add_command(function_name='start', callback=start)
     app.add_command(callback=inline_caps, type_handler=application.INLINE_HANDLER)
     app.add_message(echo)
-    app.add_message(callback=unknown, filters=ext.Filters.command)
+    app.add_message(callback=unknown, filters=telegram.ext.Filters.command)
     print("run")
     app.run()
