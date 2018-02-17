@@ -14,16 +14,18 @@ Add your token given by the Bot Father in the config.ini file
 .. code-block:: python
 
     from zybot.configuration import ConfigurationIni, Configuration
-    from zybot.app import Application
-
-
-    def start(bot, update):
-        bot.send_message(chat_id=update.message.chat_id, text="hello world")
-
+    from zybot.app import application
 
     config = Configuration(ctor=ConfigurationIni, filename="./config.ini")
-    app = Application()
-    app.add_command(function_name='start', callback=start)
+    app = application.Application()
+
+
+    @app.handler()
+    def start(bot, update):
+        """
+        Say to you 'hello world'
+        """
+        bot.send_message(chat_id=update.message.chat_id, text="hello world")
 
 .. code-block:: none
 

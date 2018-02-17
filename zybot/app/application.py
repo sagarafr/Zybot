@@ -19,10 +19,11 @@
 
 from telegram import ext
 from ..configuration import configuration
-from ..command import command
+import inspect
 
 INLINE_HANDLER = "inline"
 COMMAND_HANDLER = "command"
+MESSAGE_HANDLER = "message"
 
 
 class Application(object):
@@ -31,25 +32,33 @@ class Application(object):
     class __Application(object):
         def __init__(self):
             config = configuration.Configuration()
-            cmd = command.Command()
             self._updater = ext.Updater(token=config.token)
             self._dispatcher = self._updater.dispatcher
+            self._help_command = {}
 
-        def add_command(self, callback, function_name="", type_handler=None, group=ext.dispatcher.DEFAULT_GROUP):
-            if type_handler is not None:
+        def handler(self, type_handler=COMMAND_HANDLER, group=ext.dispatcher.DEFAULT_GROUP, filters=ext.Filters.text):
+            def decorator(callback):
                 if type_handler == COMMAND_HANDLER:
-                    self._dispatcher.add_handler(handler=ext.CommandHandler(function_name, callback), group=group)
+                    self._dispatcher.add_handler(handler=ext.CommandHandler(callback.__name__, callback), group=group)
                 elif type_handler == INLINE_HANDLER:
                     self._dispatcher.add_handler(handler=ext.InlineQueryHandler(callback), group=group)
-            else:
-                self._dispatcher.add_handler(handler=ext.CommandHandler(function_name, callback), group=group)
-
-        def add_message(self, callback, filters=ext.Filters.text, group=ext.dispatcher.DEFAULT_GROUP):
-            self._dispatcher.add_handler(ext.MessageHandler(filters, callback), group=group)
+                elif type_handler == MESSAGE_HANDLER:
+                    self._dispatcher.add_handler(handler=ext.MessageHandler(filters, callback), group=ext.dispatcher.DEFAULT_GROUP)
+                if type_handler in [COMMAND_HANDLER, INLINE_HANDLER, MESSAGE_HANDLER]:
+                    self._help_command[callback.__name__] = inspect.cleandoc(inspect.getdoc(callback))
+            return decorator
 
         def run(self):
+            self._dispatcher.add_handler(handler=ext.CommandHandler("help", self._help()), group=ext.dispatcher.DEFAULT_GROUP)
             self._updater.start_polling()
             self.stop()
+
+        def _help(self):
+            def _help_command(bot, update):
+                _help_str = "\n".join(["{}: {}".format(key, value) for key, value in self._help_command.items()])
+                print(_help_str)
+                bot.send_message(chat_id=update.message.chat_id, text=_help_str)
+            return _help_command
 
         def stop(self):
             self._updater.idle()

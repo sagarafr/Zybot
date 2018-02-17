@@ -18,14 +18,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-
-from examples.application import Application
+from .app import application
 
 
 def main():
     app = os.getenv("ZYBOT_APP")
     exec(open(app).read())
-    app = Application()
+    app = application.Application()
     print("run")
     app.run()
 
