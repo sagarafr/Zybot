@@ -56,7 +56,6 @@ class Application(object):
         def _help(self):
             def _help_command(bot, update):
                 _help_str = "\n".join(["{}: {}".format(key, value) for key, value in self._help_command.items()])
-                print(_help_str)
                 bot.send_message(chat_id=update.message.chat_id, text=_help_str)
             return _help_command
 

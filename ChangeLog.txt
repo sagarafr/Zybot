@@ -1,4 +1,6 @@
-Version 0.0
+Version 0.0.1
 
-* Add a configuration file to store token
+* Add an ini file configuration and token environment to store token
 * Add an application class to manage basic command and filter
+* Add decorator in order to write command and filter
+* Add an basic loading command

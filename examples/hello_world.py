@@ -20,7 +20,7 @@
 from zybot.configuration import ConfigurationIni, Configuration
 from zybot.app import application
 
-config = Configuration(ctor=ConfigurationIni, filename="./config.ini")
+config = Configuration(ctor=ConfigurationIni, filename="./examples/config.ini")
 app = application.Application()
 
 
