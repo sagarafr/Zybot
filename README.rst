@@ -32,7 +32,6 @@ Add your token given by the Bot Father in the config.ini file
     [DEFAULT]
     token = token_given_by_the_bot_father
 
-
 .. code-block:: none
 
     $ ZYBOT_APP="hello.py" python3 -m zybot zybot
