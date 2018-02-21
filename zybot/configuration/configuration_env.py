@@ -17,16 +17,25 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import *
+from .abstract_configuration import ConfigurationAbstract
 import os
 
 
 class ConfigurationEnv(ConfigurationAbstract):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    """
+    Implement ConfigurationAbstract. ConfigurationEnv permit to you to initialize the token with the env_name which is
+    the environment variable to found in the environment. By default the value is TELEGRAM_TOKEN.
+    """
+    def __init__(self, env_name: str="TELEGRAM_TOKEN", **kwargs):
+        """
+        Initialize the configuration from the environment variable
+        :param env_name: str is the environment variable to found
+        :param kwargs:
+        """
+        super().__init__(env_name=env_name, **kwargs)
 
-    def _init_token(self, **kwargs):
-        token = os.getenv('TELEGRAM_TOKEN')
+    def _init_token(self, env_name: str, **kwargs):
+        token = os.getenv(env_name)
         if token is None:
             raise ValueError("The environment variable TELEGRAM_TOKEN is not created")
         self._token = token

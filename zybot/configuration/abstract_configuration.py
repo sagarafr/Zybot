@@ -22,16 +22,32 @@ import abc
 
 
 class ConfigurationAbstract(object, metaclass=abc.ABCMeta):
+    """
+    ConfigurationAbstract is the abstraction of the configuration.
+    """
     _token = None
 
     def __init__(self, **kwargs):
+        """
+        Initialize the ConfigurationAbstract
+        :param kwargs:
+        """
         if self._token is None:
             self._init_token(**kwargs)
 
     @property
     def token(self):
+        """
+        Return the token of your bot given by BotFather
+        :return: str
+        """
         return self._token
 
     @abc.abstractmethod
     def _init_token(self, **kwargs):
+        """
+        Is the only function that must be implemented to initialize the token value
+        :param kwargs: All argument given to you to initialize
+        :raise: NotImplementedError
+        """
         raise NotImplementedError()

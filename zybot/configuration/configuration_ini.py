@@ -17,29 +17,44 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import *
+from .abstract_configuration import ConfigurationAbstract
 import configparser
 from os import path
 
 
 class ConfigurationIni(ConfigurationAbstract):
-    def __init__(self, **kwargs):
+    """
+    Implement ConfigurationAbstract. ConfigurationIni permit to you to initialize the token with a ini file.
+    """
+    def __init__(self, filename: str, **kwargs):
+        """
+        Initialize the Configuration from a filename at the ini format
+        :param filename: str content the name of the filename
+        :param kwargs:
+        """
         self._config = configparser.ConfigParser()
-        super().__init__(**kwargs)
+        super().__init__(filename=filename, **kwargs)
 
-    def _init_token(self, **kwargs):
-        if 'filename' not in kwargs:
-            raise ValueError("There are no filename argument")
-        filename = kwargs['filename']
+    def _init_token(self, filename, **kwargs):
         if not path.isfile(filename):
             raise ValueError("Filename doesn't exist")
-
-        self._config.read(filename)
+        try:
+            self._config.read(filename)
+        except FileNotFoundError as err:
+            raise ValueError(err) from err
         if 'DEFAULT' not in self._config:
             raise ValueError("In the ini configuration file there are not a DEFAULT section")
         if 'token' not in self._config['DEFAULT']:
             raise ValueError("In the ini configuration file there are not a token option in the DEFAULT section")
         self._token = self._config['DEFAULT']['token']
+
+    @property
+    def config(self):
+        """
+        Get the config
+        :return: configparser.ConfigParser
+        """
+        return self._config
 
     def get(self, option: str, session: str = "DEFAULT"):
         return self._config.get(session, option=option)

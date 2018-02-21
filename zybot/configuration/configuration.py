@@ -21,15 +21,16 @@ from .abstract_configuration import ConfigurationAbstract
 
 
 class Configuration(object):
+    """
+    Configuration is the main configuration object. The parameter ctor is an implementation of the
+    ConfigurationAbstract that permit to you to initialize your token by the way of you want.
+    """
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, ctor, **kwargs):
         if cls._instance is None:
-            if 'ctor' not in kwargs:
-                raise ValueError("Have not ctor variable")
-            if not issubclass(kwargs['ctor'], ConfigurationAbstract):
+            if not issubclass(ctor, ConfigurationAbstract):
                 raise ValueError("Have not the right inheritance")
-            ctor = kwargs['ctor']
             cls._instance = ctor(**kwargs)
 
         return cls._instance
