@@ -19,4 +19,3 @@
 
 from . import app
 from . import configuration
-from . import bot

@@ -17,7 +17,17 @@
 
 # -*- coding: utf-8 -*-
 
-from .bot import main
+import os
+from .app import application
+
+
+def main():
+    app = os.getenv("ZYBOT_APP")
+    exec(open(app).read())
+    app = application.Application()
+    print("run")
+    app.run()
+
 
 if __name__ == '__main__':
     main()
