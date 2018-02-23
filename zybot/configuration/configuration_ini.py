@@ -24,7 +24,8 @@ from os import path
 
 class ConfigurationIni(ConfigurationAbstract):
     """
-    Implement ConfigurationAbstract. ConfigurationIni permit to you to initialize the token with a ini file.
+    Implement ConfigurationAbstract. ConfigurationIni permit to you to initialize the token and the admin with a file
+    with the ini format. The key for the token is token. The key for the admin is admin, with ',' for separator
     """
     def __init__(self, filename: str, **kwargs):
         """
@@ -33,20 +34,30 @@ class ConfigurationIni(ConfigurationAbstract):
         :param kwargs:
         """
         self._config = configparser.ConfigParser()
-        super().__init__(filename=filename, **kwargs)
-
-    def _init_token(self, filename, **kwargs):
         if not path.isfile(filename):
             raise ValueError("Filename doesn't exist")
         try:
             self._config.read(filename)
         except FileNotFoundError as err:
             raise ValueError(err) from err
-        if 'DEFAULT' not in self._config:
-            raise ValueError("In the ini configuration file there are not a DEFAULT section")
-        if 'token' not in self._config['DEFAULT']:
-            raise ValueError("In the ini configuration file there are not a token option in the DEFAULT section")
-        self._token = self._config['DEFAULT']['token']
+        super().__init__(**kwargs)
+
+    def _get_element(self, option: str, session: str="DEFAULT"):
+        if session not in self._config:
+            raise ValueError("In the ini configuration file there are not a {} section".format(session))
+        if option not in self._config[session]:
+            raise ValueError("In the ini configuration file there are not a {} option "
+                             "in the {} section".format(session, option))
+        return self._config[session][option]
+
+    def _init_token(self, **kwargs):
+        self._token = self._get_element(option='token')
+
+    def _init_admin(self, **kwargs):
+        for admin in self._get_element(option='admin').split(','):
+            tmp = str(admin).strip()
+            if tmp != '' and tmp.isdigit():
+                self._admins.append(int(tmp))
 
     @property
     def config(self):
@@ -57,4 +68,7 @@ class ConfigurationIni(ConfigurationAbstract):
         return self._config
 
     def get(self, option: str, session: str = "DEFAULT"):
-        return self._config.get(session, option=option)
+        try:
+            return self._get_element(option=option, session=session)
+        except ValueError:
+            return None

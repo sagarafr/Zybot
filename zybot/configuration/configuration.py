@@ -27,8 +27,12 @@ class Configuration(object):
     """
     _instance = None
 
-    def __new__(cls, *args, ctor, **kwargs):
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
+            ctor = kwargs.get('ctor')
+            if ctor is None:
+                raise ValueError("Have not a ctor parameter")
+
             if not issubclass(ctor, ConfigurationAbstract):
                 raise ValueError("Have not the right inheritance")
             cls._instance = ctor(**kwargs)

@@ -23,19 +23,27 @@ import os
 
 class ConfigurationEnv(ConfigurationAbstract):
     """
-    Implement ConfigurationAbstract. ConfigurationEnv permit to you to initialize the token with the env_name which is
-    the environment variable to found in the environment. By default the value is TELEGRAM_TOKEN.
+    Implement ConfigurationAbstract. ConfigurationEnv permit to you to initialize the token and the admins list with
+    the env_token and env_admin which is the environment variable to found in the environment.
+    By default the env_token is TELEGRAM_TOKEN and the env_admin is TELEGRAM_ADMINS.
     """
-    def __init__(self, env_name: str="TELEGRAM_TOKEN", **kwargs):
+    def __init__(self, env_token: str="TELEGRAM_TOKEN", env_admin: str="TELEGRAM_ADMINS", **kwargs):
         """
         Initialize the configuration from the environment variable
         :param env_name: str is the environment variable to found
         :param kwargs:
         """
-        super().__init__(env_name=env_name, **kwargs)
+        super().__init__(env_token=env_token, env_admin=env_admin, **kwargs)
 
-    def _init_token(self, env_name: str, **kwargs):
-        token = os.getenv(env_name)
+    def _init_token(self, env_token: str, **kwargs):
+        token = os.getenv(env_token)
         if token is None:
             raise ValueError("The environment variable TELEGRAM_TOKEN is not created")
         self._token = token
+
+    def _init_admin(self, env_admin: str, **kwargs):
+        admins = os.getenv(env_admin)
+        for admin in admins.split(os.pathsep):
+            tmp = str(admin).strip()
+            if tmp != '' and tmp.isdigit():
+                self._admins.append(int(tmp))
