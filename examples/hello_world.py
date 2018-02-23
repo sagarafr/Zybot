@@ -24,9 +24,18 @@ config = Configuration(ctor=ConfigurationIni, filename="./examples/config.ini")
 app = application.Application()
 
 
-@app.handler()
+@app.command()
 def start(bot, update):
     """
     Say to you 'hello world'
     """
     bot.send_message(chat_id=update.message.chat_id, text="hello world")
+
+
+@app.command()
+@app.restricted
+def yolo(bot, update):
+    """
+    Say to you 'yolo'
+    """
+    bot.send_message(chat_id=update.message.chat_id, text="yolo")
