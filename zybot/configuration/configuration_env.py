@@ -38,7 +38,7 @@ class ConfigurationEnv(ConfigurationAbstract):
     def _init_token(self, env_token: str, **kwargs):
         token = os.getenv(env_token)
         if token is None:
-            raise ValueError("The environment variable TELEGRAM_TOKEN is not created")
+            raise EnvironmentError("The environment variable TELEGRAM_TOKEN is not created")
         self._token = token
 
     def _init_admin(self, env_admin: str, **kwargs):

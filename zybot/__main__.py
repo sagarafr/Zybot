@@ -19,14 +19,20 @@
 
 import os
 from .app import application
+from os import path
 
 
 def main():
     app = os.getenv("ZYBOT_APP")
-    exec(open(app).read())
-    app = application.Application()
-    print("run")
-    app.run()
+    if app is None:
+        raise EnvironmentError("Fail to get ZYBOT_APP environment variable")
+    if path.isfile(app):
+        raise FileNotFoundError("Fail to get [{}] filename in the ZYBOT_APP environment variable".format(app))
+    with open(app) as fd:
+        exec(fd.read())
+        app = application.Application()
+        print("run")
+        app.run()
 
 
 if __name__ == '__main__':

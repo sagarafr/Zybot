@@ -35,19 +35,17 @@ class ConfigurationIni(ConfigurationAbstract):
         """
         self._config = configparser.ConfigParser()
         if not path.isfile(filename):
-            raise ValueError("Filename doesn't exist")
-        try:
-            self._config.read(filename)
-        except FileNotFoundError as err:
-            raise ValueError(err) from err
+            raise FileNotFoundError("Fail to found the filename [{}] given in argument".format(filename))
+        with open(filename) as fd:
+            self._config.read(fd)
         super().__init__(**kwargs)
 
     def _get_element(self, option: str, session: str="DEFAULT"):
         if session not in self._config:
-            raise ValueError("In the ini configuration file there are not a {} section".format(session))
+            raise KeyError("Fail to found the [{}] section in the configuration".format(session))
         if option not in self._config[session]:
-            raise ValueError("In the ini configuration file there are not a {} option "
-                             "in the {} section".format(session, option))
+            raise KeyError("Fail to found the [{}] option at the [{}] "
+                           "section in the configuration".format(session, option))
         return self._config[session][option]
 
     def _init_token(self, **kwargs):
@@ -68,7 +66,13 @@ class ConfigurationIni(ConfigurationAbstract):
         return self._config
 
     def get(self, option: str, session: str = "DEFAULT"):
+        """
+        Get in the configuration the option at the session asked. If it does'nt exist then return None
+        :param option:
+        :param session:
+        :return:
+        """
         try:
             return self._get_element(option=option, session=session)
-        except ValueError:
+        except KeyError:
             return None
