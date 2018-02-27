@@ -20,11 +20,11 @@
 from zybot import (config_ini, config)
 from zybot import app
 
-config = config.Configuration(ctor=config_ini.ConfigurationIni, filename="./examples/config.ini")
-app = app.Application()
+configuration = config.Configuration(ctor=config_ini.ConfigurationIni, filename="./config.ini")
+application = app.Application()
 
 
-@app.command()
+@application.command()
 def start(bot, update):
     """
     Say to you 'hello world'
@@ -32,10 +32,10 @@ def start(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="hello world")
 
 
-@app.command()
-@app.restricted
-def yolo(bot, update):
+@application.command()
+@application.restricted
+def protected(bot, update):
     """
-    Say to you 'yolo'
+    Say to you 'hello admin'
     """
-    bot.send_message(chat_id=update.message.chat_id, text="yolo")
+    bot.send_message(chat_id=update.message.chat_id, text="hello admin")

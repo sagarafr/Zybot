@@ -13,24 +13,34 @@ Add your token given by the Bot Father in the config.ini file
 
 .. code-block:: python
 
-    from zybot.configuration import ConfigurationIni, Configuration
-    from zybot.app import application
+    from zybot import (config_ini, config)
+    from zybot import app
 
-    config = Configuration(ctor=ConfigurationIni, filename="./config.ini")
-    app = application.Application()
+    configuration = config.Configuration(ctor=config_ini.ConfigurationIni, filename="./config.ini")
+    application = app.Application()
 
 
-    @app.handler()
+    @application.command()
     def start(bot, update):
         """
         Say to you 'hello world'
         """
         bot.send_message(chat_id=update.message.chat_id, text="hello world")
 
+    @application.command()
+    @application.restricted
+    def protected(bot, update):
+        """
+        Say to you 'hello admin'
+        """
+        bot.send_message(chat_id=update.message.chat_id, text="hello admin")
+
 .. code-block:: ini
 
     [DEFAULT]
     token = token_given_by_the_bot_father
+    # separator ,
+    admin = id_given_by_user_info_bot
 
 .. code-block:: none
 
