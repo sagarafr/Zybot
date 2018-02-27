@@ -17,5 +17,7 @@
 
 # -*- coding: utf-8 -*-
 
+from . import config
+from . import config_env
+from . import config_ini
 from . import app
-from . import configuration

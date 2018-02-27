@@ -18,21 +18,21 @@
 # -*- coding: utf-8 -*-
 
 import os
-from .app import application
+from . import app
 from os import path
 
 
 def main():
-    app = os.getenv("ZYBOT_APP")
-    if app is None:
+    app_file = os.getenv("ZYBOT_APP")
+    if app_file is None:
         raise EnvironmentError("Fail to get ZYBOT_APP environment variable")
-    if path.isfile(app):
-        raise FileNotFoundError("Fail to get [{}] filename in the ZYBOT_APP environment variable".format(app))
-    with open(app) as fd:
+    if not path.isfile(app_file):
+        raise FileNotFoundError("Fail to get [{}] filename in the ZYBOT_APP environment variable".format(app_file))
+    with open(app_file) as fd:
         exec(fd.read())
-        app = application.Application()
+        application = app.Application()
         print("run")
-        app.run()
+        application.run()
 
 
 if __name__ == '__main__':

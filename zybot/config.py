@@ -17,7 +17,58 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import ConfigurationAbstract
+import abc
+
+
+class ConfigurationAbstract(object, metaclass=abc.ABCMeta):
+    """
+    ConfigurationAbstract is the abstraction of the configuration. The attribute token must be a string and the elements
+    of the attribute _admins must be an integer
+    """
+    _token = None
+    _admin_is_init = False
+    _admins = []
+
+    def __init__(self, **kwargs):
+        """
+        Initialize the ConfigurationAbstract
+        :param kwargs:
+        """
+        if self._token is None:
+            self._init_token(**kwargs)
+        if not self._admin_is_init:
+            self._admin_is_init = True
+            self._init_admin(**kwargs)
+
+    @property
+    def token(self):
+        """
+        Return the token of your bot given by BotFather
+        :return: str
+        """
+        return self._token
+
+    @property
+    def admins(self):
+        return self._admins
+
+    @abc.abstractmethod
+    def _init_token(self, **kwargs):
+        """
+        Is a function that must be implemented to initialize the token value
+        :param kwargs: All argument given to you to initialize
+        :raise: NotImplementedError
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def _init_admin(self, **kwargs):
+        """
+        Is a function that muse be implemented to initialize the list of admin
+        :param kwargs:
+        :return:
+        """
+        raise NotImplemented()
 
 
 class Configuration(object):

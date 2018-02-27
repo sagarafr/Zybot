@@ -18,7 +18,7 @@
 # -*- coding: utf-8 -*-
 
 from telegram import ext
-from ..configuration import configuration
+from . import config
 import inspect
 from functools import wraps
 
@@ -37,7 +37,7 @@ class Application(object):
             Initialisation of the bot application. During the initialization, the construct will attempt to get and
             to connect to the Telegram API
             """
-            self._config = configuration.Configuration()
+            self._config = config.Configuration()
             self._updater = ext.Updater(token=self._config.token)
             self._dispatcher = self._updater.dispatcher
             self._help_command = {}

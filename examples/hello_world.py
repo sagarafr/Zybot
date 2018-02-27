@@ -17,11 +17,11 @@
 
 # -*- coding: utf-8 -*-
 
-from zybot.configuration import ConfigurationIni, Configuration
-from zybot.app import application
+from zybot import (config_ini, config)
+from zybot import app
 
-config = Configuration(ctor=ConfigurationIni, filename="./examples/config.ini")
-app = application.Application()
+config = config.Configuration(ctor=config_ini.ConfigurationIni, filename="./examples/config.ini")
+app = app.Application()
 
 
 @app.command()

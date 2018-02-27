@@ -17,12 +17,12 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import ConfigurationAbstract
+from . import config
 import configparser
 from os import path
 
 
-class ConfigurationIni(ConfigurationAbstract):
+class ConfigurationIni(config.ConfigurationAbstract):
     """
     Implement ConfigurationAbstract. ConfigurationIni permit to you to initialize the token and the admin with a file
     with the ini format. The key for the token is token. The key for the admin is admin, with ',' for separator
@@ -36,8 +36,7 @@ class ConfigurationIni(ConfigurationAbstract):
         self._config = configparser.ConfigParser()
         if not path.isfile(filename):
             raise FileNotFoundError("Fail to found the filename [{}] given in argument".format(filename))
-        with open(filename) as fd:
-            self._config.read(fd)
+        self._config.read(filename)
         super().__init__(**kwargs)
 
     def _get_element(self, option: str, session: str="DEFAULT"):

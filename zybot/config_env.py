@@ -17,11 +17,11 @@
 
 # -*- coding: utf-8 -*-
 
-from .abstract_configuration import ConfigurationAbstract
+from . import config
 import os
 
 
-class ConfigurationEnv(ConfigurationAbstract):
+class ConfigurationEnv(config.ConfigurationAbstract):
     """
     Implement ConfigurationAbstract. ConfigurationEnv permit to you to initialize the token and the admins list with
     the env_token and env_admin which is the environment variable to found in the environment.
@@ -33,6 +33,8 @@ class ConfigurationEnv(ConfigurationAbstract):
         :param env_name: str is the environment variable to found
         :param kwargs:
         """
+        if os.getenv(env_token) is None:
+            raise EnvironmentError("The environment variable TELEGRAM_TOKEN is not created")
         super().__init__(env_token=env_token, env_admin=env_admin, **kwargs)
 
     def _init_token(self, env_token: str, **kwargs):
