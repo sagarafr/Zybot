@@ -1,6 +1,7 @@
 Version 0.0.0
 
-* Add an ini file configuration and token environment to store token
+* Add an ini file configuration and token environment to store token and admin list
 * Add an application class to manage basic command and filter
+* Add decorator in order to protect some command to an admin list
 * Add decorator in order to write command and filter
 * Add an basic loading command
