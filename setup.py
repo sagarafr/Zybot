@@ -23,16 +23,26 @@ from setuptools import setup
 setup(
     name="Zybot",
     packages=["zybot"],
-    version="0.0.0",
+    version="0.0.0.dev1",
     license="ASP",
     author="Marian Gappa",
     maintainer_email="sagarafr@gmail.com",
     description="A minimalist package for building Telegram bot",
     url="https://github.com/sagarafr/Zybot",
-    keywords=["telegram-bot", "bot"],
-    classifiers=[],
+    keywords="telegram-bot bot",
     install_requires=[
         'python-telegram-bot',
+    ],
+    python_requires='>=3.6',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Environment :: Console',
+        'Environment :: No Input/Output (Daemon)',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3 :: Only',
+        'Topic :: Communications'
     ],
     entry_points='''
     [console_scripts]
